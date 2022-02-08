@@ -1,0 +1,26 @@
+// get data
+var roi = ee.Geometry.Rectangle([-83, 24, -79, 27.5]);
+var dataset = ee.ImageCollection('MODIS/006/MOD13A2')
+                  .filter(ee.Filter.date('2018-01-01', '2020-12-31'));
+print(dataset)
+var ndvi = dataset.select('NDVI');
+var ndviList = ndvi.toList(ndvi.size());
+var idx = 11;
+var ndviImage = ee.Image(ndviList.get(idx)).clip(roi);
+
+
+// visualization parameters
+var ndviVis = {
+  bands: 'NDVI',
+  min: -2000,
+  max: 10000,
+  palette: [
+    '000000', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+    '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+    '012E01', '011D01', '011301'
+  ],
+};
+
+// make map
+Map.addLayer(ndviImage, ndviVis, 'NDVI Image'); 
+Map.setCenter(-80.5, 26, 8);
